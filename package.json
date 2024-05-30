@@ -30,10 +30,5 @@
     "jsonwebtoken": "^9.0.2",
     "prisma": "^5.14.0",
     "zod": "^3.23.8"
-  },
-  "pre-commit": [
-    "ts.check",
-    "build",
-    "add-build"
-  ]
+  }
 }
