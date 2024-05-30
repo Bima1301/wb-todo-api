@@ -1,4 +1,4 @@
-import { apiResponse } from './../../helper/index';
+import { apiResponse } from '../helper/index';
 import { Request, Response } from "express";
 import { prismaClient } from "..";
 import { NotFoundException } from '../exceptions/not-found';

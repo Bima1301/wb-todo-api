@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.statusTodo = exports.deleteTodo = exports.updateTodo = exports.listTodo = exports.createTodo = void 0;
-const index_1 = require("./../../helper/index");
+const index_1 = require("../helper/index");
 const __1 = require("..");
 const not_found_1 = require("../exceptions/not-found");
 const exceptions_1 = require("../exceptions");

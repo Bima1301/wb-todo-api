@@ -1,4 +1,4 @@
-import { formatZodError } from './../helper/index';
+import { formatZodError } from './helper/index';
 import { NextFunction, Request, Response } from "express"
 import { ErrorCodes, HttpException } from "./exceptions"
 import { InternalException } from "./exceptions/internal-exception"

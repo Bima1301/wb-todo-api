@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ErrorHandler = void 0;
-const index_1 = require("./../helper/index");
+const index_1 = require("./helper/index");
 const exceptions_1 = require("./exceptions");
 const internal_exception_1 = require("./exceptions/internal-exception");
 const zod_1 = require("zod");

@@ -1,4 +1,4 @@
-import { apiResponse } from './../../helper/index';
+import { apiResponse } from '../helper/index';
 import { NextFunction, Request, Response } from "express";
 import { HttpException } from "../exceptions";
 
