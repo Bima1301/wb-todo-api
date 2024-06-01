@@ -5,7 +5,7 @@ import { NotFoundException } from '../exceptions/not-found';
 import { ErrorCodes } from '../exceptions';
 
 export const createTodo = async (req: Request, res: Response) => {
-     const { title } = req.body;
+     const { title, completed } = req.body;
 
      if (!req.user) {
           return res.status(401).json(apiResponse(401, 'Unauthorized', null))
@@ -14,7 +14,7 @@ export const createTodo = async (req: Request, res: Response) => {
      const todo = await prismaClient.todo.create({
           data: {
                title: title,
-               completed: false,
+               completed: completed,
                user: {
                     connect: {
                          id: req.user.id
@@ -31,37 +31,49 @@ export const listTodo = async (req: Request, res: Response) => {
      if (!req.user) {
           return res.status(401).json(apiResponse(401, 'Unauthorized', null))
      }
-     const page = req.query.page ? parseInt(req.query.page as string) : 1
-     const pageSize = req.query.pageSize ? parseInt(req.query.pageSize as string) : 10
 
-     // Extract and parse filters
-     const filters = req.query.filters ? JSON.parse(req.query.filters as string) : {};
-     const searchFilters = req.query.searchFilters ? JSON.parse(req.query.searchFilters as string) : {};
+     const page = parseInt(req.query.page as string) || 1;
+     const pageSize = parseInt(req.query.pageSize as string) || 10;
 
-     const count = await prismaClient.todo.count()
+     const filters = JSON.parse(req.query.filters as string) || {};
+     const searchFilters = JSON.parse(req.query.searchFilters as string) || {};
+     const orderBy = JSON.parse(req.query.orderBy as string) || {};
+
+     const where = {
+          userId: req.user.id,
+          ...filters,
+          AND: Object.keys(searchFilters).map(key => ({
+               [key]: {
+                    contains: searchFilters[key],
+                    mode: 'insensitive'
+               }
+          }))
+     };
+
+     const count = await prismaClient.todo.count({ where });
      const todos = await prismaClient.todo.findMany({
-          where: {
-               userId: req.user.id,
-               ...filters,
-               AND: Object.keys(searchFilters).map(key => ({
-                    [key]: {
-                         contains: searchFilters[key],
-                         mode: 'insensitive'
-                    }
-               }))
+          where,
+          orderBy: {
+               [orderBy.field.replace(/_(.)/g, (_: any, group: any) => group.toUpperCase())]: orderBy.sort as 'asc' | 'desc'
           },
           skip: (page - 1) * pageSize,
           take: pageSize
-     })
+     });
+
+     const totalPage = Math.ceil(count / pageSize);
+     const itemLeft = Math.max(0, count - (page * pageSize));
 
      const response = {
           todos,
-          page: Math.ceil(count / pageSize),
-          pageSize,
-     }
+          currentPage: page,
+          totalData: count,
+          totalPage,
+          itemLeft
+     };
 
-     res.status(200).json(apiResponse(200, 'Todos found', response))
-}
+     res.status(200).json(apiResponse(200, 'Todos found', response));
+};
+
 
 export const updateTodo = async (req: Request, res: Response) => {
      try {
