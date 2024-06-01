@@ -27,7 +27,16 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
           }
      })
 
-     return res.status(201).json(apiResponse(201, 'User created successfully', user))
+     const token = jwt.sign({
+          userId: user.id,
+     }, JWT_SECRET)
+
+     const response = {
+          user,
+          token
+     }
+
+     return res.status(201).json(apiResponse(201, 'User created', response))
 
 }
 

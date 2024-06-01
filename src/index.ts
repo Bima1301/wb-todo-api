@@ -6,8 +6,10 @@ import { SignupSchema } from './schema/users'
 import { errorMiddleware } from './middlewares/errors'
 
 const app: Express = express()
+var cors = require('cors')
 
 app.use(express.json())
+app.use(cors({ origin: true, credentials: true }));
 app.use('/api', rootRouter)
 
 export const prismaClient = new PrismaClient({
