@@ -4,8 +4,8 @@ import { PrismaClient } from '@prisma/client'
 import rootRouter from './routes'
 import { SignupSchema } from './schema/users'
 import { errorMiddleware } from './middlewares/errors'
+import { app, server } from './lib/socket'
 
-const app: Express = express()
 var cors = require('cors')
 
 app.use(express.json())
@@ -27,6 +27,6 @@ export const prismaClient = new PrismaClient({
 
 app.use(errorMiddleware)
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
      console.log('Server alive on port', PORT)
 })

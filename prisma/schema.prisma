@@ -36,3 +36,33 @@ model Todo {
 
   @@map("todos")
 }
+
+model Conversation {
+  id           String        @id @default(cuid())
+  title        String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  messages     Message[]
+  participants Participant[]
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  text           String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversationId String
+  participant    Participant  @relation(fields: [participantId], references: [id])
+  participantId  String
+}
+
+model Participant {
+  id             String        @id @default(cuid())
+  email          String        @unique
+  role           String        @default("USER")
+  conversation   Conversation? @relation(fields: [conversationId], references: [id])
+  conversationId String? // Make this field nullable
+  createdAt      DateTime      @default(now())
+  Message        Message[]
+}
